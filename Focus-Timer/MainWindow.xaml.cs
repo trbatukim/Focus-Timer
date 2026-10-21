@@ -23,8 +23,8 @@ namespace Focus_Timer
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        private static readonly TimeSpan FocusLength = TimeSpan.FromMinutes(25);
-        private static readonly TimeSpan BreakLength = TimeSpan.FromMinutes(5);
+        private static TimeSpan FocusLength = TimeSpan.FromMinutes(25);
+        private static TimeSpan BreakLength = TimeSpan.FromMinutes(5);
 
         private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(1) };
         private TimeSpan _remaining;
@@ -44,13 +44,42 @@ namespace Focus_Timer
         private void Timer_Tick(object? sender, object e)
         {
             _remaining -= TimeSpan.FromSeconds(1);
-            globalFocusTime += TimeSpan.FromSeconds(1);
+
+            if (_isFocus)
+            {
+                globalFocusTime += TimeSpan.FromSeconds(1);
+            }
+            
             if (_remaining <= TimeSpan.Zero)
             {
                 SwitchMode();   // focus -> break -> focus
                 return;
             }
             UpdateDisplay();
+        }
+
+        private void FocusInput_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs e)
+        {
+            double newValue = e.NewValue;
+            double oldValue = e.OldValue;
+
+            if (sender == FocusInputMinutes || sender == FocusInputSeconds) {
+                UpdateFocusTime();
+            }
+        }
+
+        private void UpdateFocusTime()
+        {
+            if (FocusInputMinutes is null || FocusInputSeconds is null || TimeText is null)
+                return;
+
+            double minutes = double.IsNaN(FocusInputMinutes.Value) ? 0 : FocusInputMinutes.Value;
+            double seconds = double.IsNaN(FocusInputSeconds.Value) ? 0 : FocusInputSeconds.Value;
+
+            FocusLength = TimeSpan.FromMinutes(minutes) + TimeSpan.FromSeconds(seconds);
+
+            if (_isFocus && !_timer.IsEnabled)
+                ResetToCurrentMode();
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
@@ -93,6 +122,7 @@ namespace Focus_Timer
             ModeText.Text = _isFocus ? "Focus" : "Break";
             TimeText.Text = _remaining.ToString(@"mm\:ss");
             Progress.Value = 1 - (_remaining / CurrentLength);
+            GlobalFocusTimeLabel.Text = globalFocusTime.ToString();
         }
     }
 }

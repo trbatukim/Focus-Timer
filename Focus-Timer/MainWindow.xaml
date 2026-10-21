@@ -17,10 +17,35 @@
         <TextBlock x:Name="ModeText" Text="Focus"
                    Style="{StaticResource SubtitleTextBlockStyle}"
                    HorizontalAlignment="Center" />
+        
+        <TextBlock x:Name="FocusInputLabel" Text="Enter Focus Time"
+           Style="{StaticResource SubtitleTextBlockStyle}"
+           HorizontalAlignment="Center" />
+        <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+            <NumberBox
+                x:Name="FocusInputMinutes"
+                Header="Minutes"
+                ValueChanged="FocusInput_ValueChanged"
+                PlaceholderText="MM"
+                Minimum="0"
+                Maximum="180"
+                Width="110" />
+            <NumberBox
+                x:Name="FocusInputSeconds"
+                Header="Seconds"
+                ValueChanged="FocusInput_ValueChanged"
+                PlaceholderText="SS"
+                Minimum="0"
+                Maximum="59"
+                Width="110" />
+        </StackPanel>
+
         <TextBlock x:Name="TimeText" Text="25:00"
                    FontSize="72" FontWeight="SemiBold"
                    HorizontalAlignment="Center" />
+        
         <ProgressBar x:Name="Progress" Width="300" Maximum="1" />
+        
         <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
             <Button x:Name="StartButton" Content="Start"
                     Style="{StaticResource AccentButtonStyle}"
@@ -28,5 +53,15 @@
             <Button Content="Reset" Click="ResetButton_Click" />
             <Button Content="Skip" Click="SkipButton_Click" />
         </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+            <TextBlock x:Name="GlobalFocusLabel" Text="You've focused for a total of: "
+               Style="{StaticResource SubtitleTextBlockStyle}"
+               HorizontalAlignment="Center" />
+            <TextBlock x:Name="GlobalFocusTimeLabel" Text=""
+               Style="{StaticResource SubtitleTextBlockStyle}"
+               HorizontalAlignment="Center" />
+        </StackPanel>
+        
     </StackPanel>
 </Window>
