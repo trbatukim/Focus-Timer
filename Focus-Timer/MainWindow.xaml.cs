@@ -1,3 +1,4 @@
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -5,7 +6,8 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Windowing;
+using Microsoft.Windows.AppNotifications;
+using Microsoft.Windows.AppNotifications.Builder;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +15,8 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-
+using Windows.Foundation.Metadata;
+using Windows.UI.Shell;
 using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -38,9 +41,18 @@ namespace Focus_Timer
 
         private TimeSpan globalFocusTime;
 
+        private FocusSessionManager? _focusManager;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            if (FocusSessionManager.IsSupported)
+            {
+                _focusManager = FocusSessionManager.GetDefault();
+                _focusManager.IsFocusActiveChanged += FocusManager_IsFocusActiveChanged;
+                UpdateDNDStatus();
+            }
 
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
@@ -105,7 +117,13 @@ namespace Focus_Timer
             Close();
         }
 
-        private void Window_Closed(object sender, WindowEventArgs args) => _tray?.Dispose();
+        private void Window_Closed(object sender, WindowEventArgs args)
+        {
+            _tray?.Dispose();
+
+            if (_focusManager is not null)
+                _focusManager.IsFocusActiveChanged -= FocusManager_IsFocusActiveChanged;
+        }
 
         private TimeSpan CurrentLength => _isFocus ? FocusLength : BreakLength;
 
@@ -120,6 +138,7 @@ namespace Focus_Timer
             
             if (_remaining <= TimeSpan.Zero)
             {
+                NotifySessionEnded(_isFocus);
                 SwitchMode();   // focus -> break -> focus
                 return;
             }
@@ -202,6 +221,26 @@ namespace Focus_Timer
                 FocusInputSeconds.IsEnabled = false;
             }
         }
+        private void FocusManager_IsFocusActiveChanged(FocusSessionManager sender, object args)
+        {
+            DispatcherQueue.TryEnqueue(UpdateDNDStatus);
+        }
+
+        private void UpdateDNDStatus()
+        {
+            if (FocusSessionManager.IsSupported)
+            {
+                var focus = FocusSessionManager.GetDefault();
+                if (!focus.IsFocusActive)
+                {
+                    DNDStatusText.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    DNDStatusText.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
@@ -237,6 +276,19 @@ namespace Focus_Timer
             TimeText.Text = _remaining.ToString(@"mm\:ss");
             Progress.Value = 1 - (_remaining / CurrentLength);
             GlobalFocusTimeLabel.Text = globalFocusTime.ToString();
+        }
+
+        private void NotifySessionEnded(bool focusEnded)
+        {
+            var builder = new AppNotificationBuilder()
+                .AddText(focusEnded ? "Focus session done" : "Break's over")
+                .AddText(focusEnded ? "Time for a break." : "Back to focus.")
+                .SetAudioEvent(AppNotificationSoundEvent.Reminder);
+
+            if (AppNotificationBuilder.IsUrgentScenarioSupported())
+                builder.SetScenario(AppNotificationScenario.Urgent);
+
+            AppNotificationManager.Default.Show(builder.BuildNotification());
         }
     }
 }
