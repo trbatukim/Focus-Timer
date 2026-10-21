@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Windowing;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,6 +36,13 @@ namespace Focus_Timer
         public MainWindow()
         {
             InitializeComponent();
+
+            AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
+            AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Standard;
+
+            ExtendsContentIntoTitleBar = true;
+            SetTitleBar(AppTitleBar);
+
             _timer.Tick += Timer_Tick;
             ResetToCurrentMode();
         }
@@ -68,6 +76,17 @@ namespace Focus_Timer
             }
         }
 
+        private void BreakInput_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs e)
+        {
+            double newValue = e.NewValue;
+            double oldValue = e.OldValue;
+
+            if (sender == BreakInputMinutes || sender == BreakInputSeconds)
+            {
+                UpdateBreakTime();
+            }
+        }
+
         private void UpdateFocusTime()
         {
             if (FocusInputMinutes is null || FocusInputSeconds is null || TimeText is null)
@@ -82,17 +101,43 @@ namespace Focus_Timer
                 ResetToCurrentMode();
         }
 
+        private void UpdateBreakTime()
+        {
+            if (BreakInputMinutes is null || BreakInputSeconds is null || TimeText is null)
+                return;
+
+            double minutes = double.IsNaN(BreakInputMinutes.Value) ? 0 : BreakInputMinutes.Value;
+            double seconds = double.IsNaN(BreakInputSeconds.Value) ? 0 : BreakInputSeconds.Value;
+
+            BreakLength = TimeSpan.FromMinutes(minutes) + TimeSpan.FromSeconds(seconds);
+
+            if (!_isFocus && !_timer.IsEnabled)
+                ResetToCurrentMode();
+        }
+
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             if (_timer.IsEnabled)
             {
                 _timer.Stop();
                 StartButton.Content = "Start";
+
+                BreakInputMinutes.IsEnabled = true;
+                BreakInputSeconds.IsEnabled = true;
+
+                FocusInputMinutes.IsEnabled = true;
+                FocusInputSeconds.IsEnabled = true;
             }
             else
             {
                 _timer.Start();
                 StartButton.Content = "Pause";
+
+                BreakInputMinutes.IsEnabled = false;
+                BreakInputSeconds.IsEnabled = false;
+
+                FocusInputMinutes.IsEnabled = false;
+                FocusInputSeconds.IsEnabled = false;
             }
         }
 
@@ -100,6 +145,13 @@ namespace Focus_Timer
         {
             _timer.Stop();
             StartButton.Content = "Start";
+
+            BreakInputMinutes.IsEnabled = true;
+            BreakInputSeconds.IsEnabled = true;
+
+            FocusInputMinutes.IsEnabled = true;
+            FocusInputSeconds.IsEnabled = true;
+
             ResetToCurrentMode();
         }
 
