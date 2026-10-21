@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Focus-Timer (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Focus-Timer (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
