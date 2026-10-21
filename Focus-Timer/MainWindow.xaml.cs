@@ -23,9 +23,76 @@ namespace Focus_Timer
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        private static readonly TimeSpan FocusLength = TimeSpan.FromMinutes(25);
+        private static readonly TimeSpan BreakLength = TimeSpan.FromMinutes(5);
+
+        private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(1) };
+        private TimeSpan _remaining;
+        private bool _isFocus = true;
+
+        private TimeSpan globalFocusTime;
+
         public MainWindow()
         {
             InitializeComponent();
+            _timer.Tick += Timer_Tick;
+            ResetToCurrentMode();
+        }
+
+        private TimeSpan CurrentLength => _isFocus ? FocusLength : BreakLength;
+
+        private void Timer_Tick(object? sender, object e)
+        {
+            _remaining -= TimeSpan.FromSeconds(1);
+            globalFocusTime += TimeSpan.FromSeconds(1);
+            if (_remaining <= TimeSpan.Zero)
+            {
+                SwitchMode();   // focus -> break -> focus
+                return;
+            }
+            UpdateDisplay();
+        }
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_timer.IsEnabled)
+            {
+                _timer.Stop();
+                StartButton.Content = "Start";
+            }
+            else
+            {
+                _timer.Start();
+                StartButton.Content = "Pause";
+            }
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            _timer.Stop();
+            StartButton.Content = "Start";
+            ResetToCurrentMode();
+        }
+
+        private void SkipButton_Click(object sender, RoutedEventArgs e) => SwitchMode();
+
+        private void SwitchMode()
+        {
+            _isFocus = !_isFocus;
+            ResetToCurrentMode();
+        }
+
+        private void ResetToCurrentMode()
+        {
+            _remaining = CurrentLength;
+            UpdateDisplay();
+        }
+
+        private void UpdateDisplay()
+        {
+            ModeText.Text = _isFocus ? "Focus" : "Break";
+            TimeText.Text = _remaining.ToString(@"mm\:ss");
+            Progress.Value = 1 - (_remaining / CurrentLength);
         }
     }
 }
