@@ -14,6 +14,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
+using WinUIEx;
+
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -24,6 +26,9 @@ namespace Focus_Timer
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        private TrayIcon? _tray;
+        private bool _isExiting;
+
         private static TimeSpan FocusLength = TimeSpan.FromMinutes(25);
         private static TimeSpan BreakLength = TimeSpan.FromMinutes(5);
 
@@ -37,15 +42,70 @@ namespace Focus_Timer
         {
             InitializeComponent();
 
-            AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
-            AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Standard;
-
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
 
             _timer.Tick += Timer_Tick;
+
+            AppWindow.Closing += AppWindow_Closing;
+            Closed += Window_Closed;
+
             ResetToCurrentMode();
         }
+
+        private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
+        {
+            if (_isExiting || !_timer.IsEnabled) return;
+
+            args.Cancel = true;
+            MinimizeToTray();
+        }
+
+        private void MinimizeToTray()
+        {
+            _tray?.Dispose();
+            _tray = new TrayIcon(1, Path.Combine(AppContext.BaseDirectory, "Assets", "tray_icon.ico"), "Focus Timer")
+            {
+                IsVisible = true
+            };
+
+            _tray.Selected += (s, e) => RestoreFromTray();
+
+            _tray.ContextMenu += (s, e) =>
+            {
+                var open = new MenuFlyoutItem { Text = "Open" };
+                open.Click += (_, _) => RestoreFromTray();
+
+                var quit = new MenuFlyoutItem { Text = "Quit" };
+                quit.Click += (_, _) => ExitApp();
+
+                var flyout = new MenuFlyout();
+                flyout.Items.Add(open);
+                flyout.Items.Add(new MenuFlyoutSeparator());
+                flyout.Items.Add(quit);
+                e.Flyout = flyout;
+            };
+
+            AppWindow.Hide();
+        }
+
+        private void RestoreFromTray()
+        {
+            AppWindow.Show();
+            Activate();
+            _tray?.Dispose();
+            _tray = null;
+        }
+
+        private void ExitApp()
+        {
+            _isExiting = true;
+            _tray?.Dispose();
+            _tray = null;
+            Close();
+        }
+
+        private void Window_Closed(object sender, WindowEventArgs args) => _tray?.Dispose();
 
         private TimeSpan CurrentLength => _isFocus ? FocusLength : BreakLength;
 
@@ -117,6 +177,8 @@ namespace Focus_Timer
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
+            if (CurrentLength <= TimeSpan.Zero) return;
+
             if (_timer.IsEnabled)
             {
                 _timer.Stop();
