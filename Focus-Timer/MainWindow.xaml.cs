@@ -16,6 +16,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
+using Windows.System;
 using Windows.UI.Shell;
 using WinUIEx;
 
@@ -236,6 +237,11 @@ namespace Focus_Timer
         {
             _remaining = CurrentLength;
             UpdateDisplay();
+        }
+
+        private async void OpenDNDSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri("ms-settings:notifications"));
         }
 
         private void UpdateDisplay()

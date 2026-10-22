@@ -100,9 +100,12 @@
                    HorizontalAlignment="Center" />
             </StackPanel>
 
-            <TextBlock x:Name="DNDStatusText" Text="Tip: Turn Do Not Disturb on to focus"
+            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                <TextBlock x:Name="DNDStatusText" Text="Tip: Turn Do Not Disturb on to focus"
                    Style="{StaticResource SubtitleTextBlockStyle}"
                    HorizontalAlignment="Center" />
+                <Button x:Name="OpenDNDSettingsButton" Content="Open Settings" Click="OpenDNDSettingsButton_Click" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>
