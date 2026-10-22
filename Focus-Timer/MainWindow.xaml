@@ -101,7 +101,6 @@
             </StackPanel>
 
             <TextBlock x:Name="DNDStatusText" Text="Tip: Turn Do Not Disturb on to focus"
-                   Visibility="Collapsed"
                    Style="{StaticResource SubtitleTextBlockStyle}"
                    HorizontalAlignment="Center" />
         </StackPanel>

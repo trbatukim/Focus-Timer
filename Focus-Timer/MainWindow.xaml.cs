@@ -41,18 +41,9 @@ namespace Focus_Timer
 
         private TimeSpan globalFocusTime;
 
-        private FocusSessionManager? _focusManager;
-
         public MainWindow()
         {
             InitializeComponent();
-
-            if (FocusSessionManager.IsSupported)
-            {
-                _focusManager = FocusSessionManager.GetDefault();
-                _focusManager.IsFocusActiveChanged += FocusManager_IsFocusActiveChanged;
-                UpdateDNDStatus();
-            }
 
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
@@ -120,9 +111,6 @@ namespace Focus_Timer
         private void Window_Closed(object sender, WindowEventArgs args)
         {
             _tray?.Dispose();
-
-            if (_focusManager is not null)
-                _focusManager.IsFocusActiveChanged -= FocusManager_IsFocusActiveChanged;
         }
 
         private TimeSpan CurrentLength => _isFocus ? FocusLength : BreakLength;
@@ -219,26 +207,6 @@ namespace Focus_Timer
 
                 FocusInputMinutes.IsEnabled = false;
                 FocusInputSeconds.IsEnabled = false;
-            }
-        }
-        private void FocusManager_IsFocusActiveChanged(FocusSessionManager sender, object args)
-        {
-            DispatcherQueue.TryEnqueue(UpdateDNDStatus);
-        }
-
-        private void UpdateDNDStatus()
-        {
-            if (FocusSessionManager.IsSupported)
-            {
-                var focus = FocusSessionManager.GetDefault();
-                if (!focus.IsFocusActive)
-                {
-                    DNDStatusText.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    DNDStatusText.Visibility = Visibility.Collapsed;
-                }
             }
         }
 
