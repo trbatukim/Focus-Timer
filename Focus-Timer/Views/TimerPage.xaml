@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Focus_Timer.Views.TimerPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    NavigationCacheMode="Required">
+
+    <Page.Resources>
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="{StaticResource OverlayCornerRadius}" />
+            <Setter Property="Padding" Value="20" />
+        </Style>
+        <Style x:Key="CardHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource BodyStrongTextBlockStyle}">
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+        </Style>
+        <Style x:Key="StatValueStyle" TargetType="TextBlock" BasedOn="{StaticResource SubtitleTextBlockStyle}">
+            <Setter Property="FontFamily" Value="Segoe UI Variable Display" />
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Padding="24,8,24,24">
+            <StackPanel MaxWidth="560" Spacing="12"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Center">
+
+                <!-- Timer card -->
+                <Border Style="{StaticResource CardStyle}" Padding="24,28">
+                    <StackPanel Spacing="18" HorizontalAlignment="Stretch">
+                        <Border HorizontalAlignment="Center" Padding="14,4" CornerRadius="12"
+                                Background="{ThemeResource AccentFillColorDefaultBrush}">
+                            <TextBlock x:Name="ModeText" Text="Focus"
+                                       Style="{StaticResource BodyStrongTextBlockStyle}"
+                                       Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                                       CharacterSpacing="60" />
+                        </Border>
+
+                        <TextBlock x:Name="TimeText" Text="25:00"
+                                   FontFamily="Segoe UI Variable Display"
+                                   FontSize="88" FontWeight="SemiBold"
+                                   HorizontalAlignment="Center" />
+
+                        <ProgressBar x:Name="Progress" Maximum="1" MaxWidth="360"
+                                     HorizontalAlignment="Stretch" />
+
+                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" Margin="0,4,0,0">
+                            <Button x:Name="StartButton" Content="Start" MinWidth="120"
+                                    Style="{StaticResource AccentButtonStyle}"
+                                    Click="StartButton_Click" />
+                            <Button Click="ResetButton_Click" ToolTipService.ToolTip="Reset">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xE72C;" FontSize="14" />
+                                    <TextBlock Text="Reset" />
+                                </StackPanel>
+                            </Button>
+                            <Button Click="SkipButton_Click" ToolTipService.ToolTip="Skip to next session">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xE893;" FontSize="14" />
+                                    <TextBlock Text="Skip" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Durations -->
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE7C5;" FontSize="14"
+                                          Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                                <TextBlock x:Name="FocusInputLabel" Text="Focus length"
+                                           Style="{StaticResource CardHeaderStyle}" />
+                            </StackPanel>
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <NumberBox
+                                    x:Name="FocusInputMinutes"
+                                    Header="Minutes"
+                                    ValueChanged="FocusInput_ValueChanged"
+                                    PlaceholderText="MM"
+                                    Minimum="0"
+                                    Maximum="180"
+                                    HorizontalAlignment="Stretch" />
+                                <NumberBox
+                                    x:Name="FocusInputSeconds"
+                                    Grid.Column="1"
+                                    Header="Seconds"
+                                    ValueChanged="FocusInput_ValueChanged"
+                                    PlaceholderText="SS"
+                                    Minimum="0"
+                                    Maximum="59"
+                                    HorizontalAlignment="Stretch" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                        <StackPanel Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xEC32;" FontSize="14"
+                                          Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                                <TextBlock x:Name="BreakInputLabel" Text="Break length"
+                                           Style="{StaticResource CardHeaderStyle}" />
+                            </StackPanel>
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <NumberBox
+                                    x:Name="BreakInputMinutes"
+                                    Header="Minutes"
+                                    ValueChanged="BreakInput_ValueChanged"
+                                    PlaceholderText="MM"
+                                    Minimum="0"
+                                    Maximum="180"
+                                    HorizontalAlignment="Stretch" />
+                                <NumberBox
+                                    x:Name="BreakInputSeconds"
+                                    Grid.Column="1"
+                                    Header="Seconds"
+                                    ValueChanged="BreakInput_ValueChanged"
+                                    PlaceholderText="SS"
+                                    Minimum="0"
+                                    Maximum="59"
+                                    HorizontalAlignment="Stretch" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Stats -->
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel Spacing="4">
+                            <TextBlock x:Name="GlobalSessionsLabel" Text="Sessions completed"
+                                       Style="{StaticResource CardHeaderStyle}" />
+                            <TextBlock x:Name="GlobalSessionsNumberLabel" Text="0"
+                                       Style="{StaticResource StatValueStyle}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                        <StackPanel Spacing="4">
+                            <TextBlock x:Name="GlobalFocusLabel" Text="Total focus time"
+                                       Style="{StaticResource CardHeaderStyle}" />
+                            <TextBlock x:Name="GlobalFocusTimeLabel" Text=""
+                                       Style="{StaticResource StatValueStyle}" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Do Not Disturb tip -->
+                <Border Style="{StaticResource CardStyle}" Padding="16,12">
+                    <Grid ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <FontIcon Glyph="&#xE708;" FontSize="16" VerticalAlignment="Center"
+                                  Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                        <TextBlock x:Name="DNDStatusText" Grid.Column="1"
+                                   Text="Tip: Turn on Do Not Disturb to stay focused"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextWrapping="Wrap" VerticalAlignment="Center" />
+                        <Button x:Name="OpenDNDSettingsButton" Grid.Column="2"
+                                Content="Open Settings" VerticalAlignment="Center"
+                                Click="OpenDNDSettingsButton_Click" />
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Page>

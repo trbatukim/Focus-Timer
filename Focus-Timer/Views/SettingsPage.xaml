@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Focus_Timer.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls">
+
+	<ScrollViewer>
+		<Grid Padding="36,24">
+		<StackPanel Spacing="4" MaxWidth="1000">
+			<TextBlock Text="Settings" Style="{StaticResource TitleTextBlockStyle}" Margin="0,0,0,16"/>
+
+			<TextBlock Text="General" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="0,8,0,4"/>
+			<controls:SettingsCard Header="Close to tray"
+                                   Description="Keep the timer running in the system tray when you close the window">
+				<controls:SettingsCard.HeaderIcon>
+					<FontIcon Glyph="&#xE8BB;"/>
+				</controls:SettingsCard.HeaderIcon>
+				<ToggleSwitch x:Name="CloseToTrayToggle" Toggled="Setting_Toggled"/>
+			</controls:SettingsCard>
+
+			<TextBlock Text="Notifications" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="0,16,0,4"/>
+			<controls:SettingsCard Header="Show notifications"
+                                   Description="Notify me when a session or break ends">
+				<controls:SettingsCard.HeaderIcon>
+					<FontIcon Glyph="&#xEA8F;"/>
+				</controls:SettingsCard.HeaderIcon>
+				<ToggleSwitch x:Name="NotificationsToggle" Toggled="Setting_Toggled"/>
+			</controls:SettingsCard>
+
+			<controls:SettingsCard Header="Play sound">
+				<ToggleSwitch x:Name="SoundToggle" Toggled="Setting_Toggled"/>
+			</controls:SettingsCard>
+
+			<controls:SettingsCard Header="Do Not Disturb"
+                                   Description="Open Windows Focus settings"
+                                   IsClickEnabled="True"
+                                   Click="OpenDNDSettings_Click">
+				<controls:SettingsCard.ActionIcon>
+					<FontIcon Glyph="&#xE8A7;"/>
+				</controls:SettingsCard.ActionIcon>
+			</controls:SettingsCard>
+		</StackPanel>
+		</Grid>
+	</ScrollViewer>
+</Page>
