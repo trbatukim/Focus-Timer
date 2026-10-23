@@ -40,11 +40,15 @@ namespace Focus_Timer
         private TimeSpan _remaining;
         private bool _isFocus = true;
 
-        private TimeSpan globalFocusTime;
+        private TimeSpan _globalFocusTime;
+        private int _globalSessionsCompleted;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            _globalSessionsCompleted = 0;
+            _globalFocusTime = TimeSpan.Zero;
 
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
@@ -122,12 +126,15 @@ namespace Focus_Timer
 
             if (_isFocus)
             {
-                globalFocusTime += TimeSpan.FromSeconds(1);
+                _globalFocusTime += TimeSpan.FromSeconds(1);
             }
             
             if (_remaining <= TimeSpan.Zero)
             {
                 NotifySessionEnded(_isFocus);
+
+                if (_isFocus) _globalSessionsCompleted++;
+
                 SwitchMode();   // focus -> break -> focus
                 return;
             }
@@ -157,7 +164,7 @@ namespace Focus_Timer
 
         private void UpdateFocusTime()
         {
-            if (FocusInputMinutes is null || FocusInputSeconds is null || TimeText is null)
+            if (BreakInputMinutes is null || BreakInputSeconds is null || TimeText is null)
                 return;
 
             double minutes = double.IsNaN(FocusInputMinutes.Value) ? 0 : FocusInputMinutes.Value;
@@ -247,9 +254,21 @@ namespace Focus_Timer
         private void UpdateDisplay()
         {
             ModeText.Text = _isFocus ? "Focus" : "Break";
-            TimeText.Text = _remaining.ToString(@"mm\:ss");
-            Progress.Value = 1 - (_remaining / CurrentLength);
-            GlobalFocusTimeLabel.Text = globalFocusTime.ToString();
+
+            if (_remaining >= TimeSpan.FromMinutes(60))
+            {
+                TimeText.Text = _remaining.ToString(@"hh\:mm\:ss");
+            }
+            else
+            {
+                TimeText.Text = _remaining.ToString(@"mm\:ss");
+            }
+
+            if (CurrentLength > TimeSpan.Zero)
+                Progress.Value = 1 - (_remaining / CurrentLength);
+
+            GlobalFocusTimeLabel.Text = _globalFocusTime.ToString();
+            GlobalSessionsNumberLabel.Text = _globalSessionsCompleted.ToString();
         }
 
         private void NotifySessionEnded(bool focusEnded)
