@@ -14,108 +14,204 @@
     </Window.SystemBackdrop>
 
     <Grid>
+        <Grid.Resources>
+            <Style x:Key="CardStyle" TargetType="Border">
+                <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+                <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="{StaticResource OverlayCornerRadius}" />
+                <Setter Property="Padding" Value="20" />
+            </Style>
+            <Style x:Key="CardHeaderStyle" TargetType="TextBlock" BasedOn="{StaticResource BodyStrongTextBlockStyle}">
+                <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            </Style>
+            <Style x:Key="StatValueStyle" TargetType="TextBlock" BasedOn="{StaticResource SubtitleTextBlockStyle}">
+                <Setter Property="FontFamily" Value="Segoe UI Variable Display" />
+            </Style>
+        </Grid.Resources>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <!-- Title bar -->
         <Grid x:Name="AppTitleBar" Height="32" VerticalAlignment="Top">
-            <TextBlock Text="Focus Timer" VerticalAlignment="Center" Margin="12,0,0,0"
-                Style="{StaticResource CaptionTextBlockStyle}"/>
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="14,0,0,0" VerticalAlignment="Center">
+                <FontIcon Glyph="&#xE916;" FontSize="13"
+                          Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                <TextBlock Text="Focus Timer" VerticalAlignment="Center"
+                           Style="{StaticResource CaptionTextBlockStyle}" />
+            </StackPanel>
         </Grid>
 
-        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16">
-            <TextBlock x:Name="ModeText" Text="Focus"
-                   Style="{StaticResource SubtitleTextBlockStyle}"
-                   HorizontalAlignment="Center" />
-            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-                <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center">
-                    <TextBlock x:Name="FocusInputLabel" Text="Enter Focus Time"
-                       Style="{StaticResource SubtitleTextBlockStyle}"
-                       HorizontalAlignment="Center" />
-                    <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
-                        <NumberBox
-                            x:Name="FocusInputMinutes"
-                            Header="Minutes"
-                            ValueChanged="FocusInput_ValueChanged"
-                            PlaceholderText="MM"
-                            Minimum="0"
-                            Maximum="180"
-                            Width="110" />
-                        <NumberBox
-                            x:Name="FocusInputSeconds"
-                            Header="Seconds"
-                            ValueChanged="FocusInput_ValueChanged"
-                            PlaceholderText="SS"
-                            Minimum="0"
-                            Maximum="59"
-                        Width="110" />
-                    </StackPanel>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <Grid Padding="24,8,24,24">
+                <StackPanel MaxWidth="560" Spacing="12"
+                            HorizontalAlignment="Stretch" VerticalAlignment="Center">
+
+                    <!-- Timer card -->
+                    <Border Style="{StaticResource CardStyle}" Padding="24,28">
+                        <StackPanel Spacing="18" HorizontalAlignment="Stretch">
+                            <Border HorizontalAlignment="Center" Padding="14,4" CornerRadius="12"
+                                    Background="{ThemeResource AccentFillColorDefaultBrush}">
+                                <TextBlock x:Name="ModeText" Text="Focus"
+                                           Style="{StaticResource BodyStrongTextBlockStyle}"
+                                           Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                                           CharacterSpacing="60" />
+                            </Border>
+
+                            <TextBlock x:Name="TimeText" Text="25:00"
+                                       FontFamily="Segoe UI Variable Display"
+                                       FontSize="88" FontWeight="SemiBold"
+                                       HorizontalAlignment="Center" />
+
+                            <ProgressBar x:Name="Progress" Maximum="1" MaxWidth="360"
+                                         HorizontalAlignment="Stretch" />
+
+                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" Margin="0,4,0,0">
+                                <Button x:Name="StartButton" Content="Start" MinWidth="120"
+                                        Style="{StaticResource AccentButtonStyle}"
+                                        Click="StartButton_Click" />
+                                <Button Click="ResetButton_Click" ToolTipService.ToolTip="Reset">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE72C;" FontSize="14" />
+                                        <TextBlock Text="Reset" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Click="SkipButton_Click" ToolTipService.ToolTip="Skip to next session">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE893;" FontSize="14" />
+                                        <TextBlock Text="Skip" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Durations -->
+                    <Grid ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel Spacing="12">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xE7C5;" FontSize="14"
+                                              Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                                    <TextBlock x:Name="FocusInputLabel" Text="Focus length"
+                                               Style="{StaticResource CardHeaderStyle}" />
+                                </StackPanel>
+                                <Grid ColumnSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <NumberBox
+                                        x:Name="FocusInputMinutes"
+                                        Header="Minutes"
+                                        ValueChanged="FocusInput_ValueChanged"
+                                        PlaceholderText="MM"
+                                        Minimum="0"
+                                        Maximum="180"
+                                        HorizontalAlignment="Stretch" />
+                                    <NumberBox
+                                        x:Name="FocusInputSeconds"
+                                        Grid.Column="1"
+                                        Header="Seconds"
+                                        ValueChanged="FocusInput_ValueChanged"
+                                        PlaceholderText="SS"
+                                        Minimum="0"
+                                        Maximum="59"
+                                        HorizontalAlignment="Stretch" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                            <StackPanel Spacing="12">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xEC32;" FontSize="14"
+                                              Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                                    <TextBlock x:Name="BreakInputLabel" Text="Break length"
+                                               Style="{StaticResource CardHeaderStyle}" />
+                                </StackPanel>
+                                <Grid ColumnSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <NumberBox
+                                        x:Name="BreakInputMinutes"
+                                        Header="Minutes"
+                                        ValueChanged="BreakInput_ValueChanged"
+                                        PlaceholderText="MM"
+                                        Minimum="0"
+                                        Maximum="180"
+                                        HorizontalAlignment="Stretch" />
+                                    <NumberBox
+                                        x:Name="BreakInputSeconds"
+                                        Grid.Column="1"
+                                        Header="Seconds"
+                                        ValueChanged="BreakInput_ValueChanged"
+                                        PlaceholderText="SS"
+                                        Minimum="0"
+                                        Maximum="59"
+                                        HorizontalAlignment="Stretch" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Stats -->
+                    <Grid ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Style="{StaticResource CardStyle}">
+                            <StackPanel Spacing="4">
+                                <TextBlock x:Name="GlobalSessionsLabel" Text="Sessions completed"
+                                           Style="{StaticResource CardHeaderStyle}" />
+                                <TextBlock x:Name="GlobalSessionsNumberLabel" Text="0"
+                                           Style="{StaticResource StatValueStyle}" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                            <StackPanel Spacing="4">
+                                <TextBlock x:Name="GlobalFocusLabel" Text="Total focus time"
+                                           Style="{StaticResource CardHeaderStyle}" />
+                                <TextBlock x:Name="GlobalFocusTimeLabel" Text=""
+                                           Style="{StaticResource StatValueStyle}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Do Not Disturb tip -->
+                    <Border Style="{StaticResource CardStyle}" Padding="16,12">
+                        <Grid ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Glyph="&#xE708;" FontSize="16" VerticalAlignment="Center"
+                                      Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                            <TextBlock x:Name="DNDStatusText" Grid.Column="1"
+                                       Text="Tip: Turn on Do Not Disturb to stay focused"
+                                       Style="{StaticResource BodyTextBlockStyle}"
+                                       TextWrapping="Wrap" VerticalAlignment="Center" />
+                            <Button x:Name="OpenDNDSettingsButton" Grid.Column="2"
+                                    Content="Open Settings" VerticalAlignment="Center"
+                                    Click="OpenDNDSettingsButton_Click" />
+                        </Grid>
+                    </Border>
                 </StackPanel>
-                <StackPanel Orientation="Vertical" Spacing="8" HorizontalAlignment="Center">
-                    <TextBlock x:Name="BreakInputLabel" Text="Enter Break Time"
-                        Style="{StaticResource SubtitleTextBlockStyle}"
-                        HorizontalAlignment="Center" />
-                    <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
-                        <NumberBox
-                            x:Name="BreakInputMinutes"
-                            Header="Minutes"
-                            ValueChanged="BreakInput_ValueChanged"
-                            PlaceholderText="MM"
-                            Minimum="0"
-                            Maximum="180"
-                            Width="110" />
-                        <NumberBox
-                            x:Name="BreakInputSeconds"
-                            Header="Seconds"
-                            ValueChanged="BreakInput_ValueChanged"
-                            PlaceholderText="SS"
-                            Minimum="0"
-                            Maximum="59"
-                            Width="110" />
-                    </StackPanel>
-                </StackPanel>
-            </StackPanel>
-
-
-            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-                <TextBlock x:Name="GlobalSessionsLabel" Text="Sessions Completed: "
-                   Style="{StaticResource SubtitleTextBlockStyle}"
-                   HorizontalAlignment="Center" />
-                <TextBlock x:Name="GlobalSessionsNumberLabel" Text="0"
-                   Style="{StaticResource SubtitleTextBlockStyle}"
-                   HorizontalAlignment="Center" />
-            </StackPanel>
-
-            <TextBlock x:Name="TimeText" Text="25:00"
-                   FontSize="72" FontWeight="SemiBold"
-                   HorizontalAlignment="Center" />
-
-            <ProgressBar x:Name="Progress" Width="300" Maximum="1" />
-
-            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-                <Button x:Name="StartButton" Content="Start"
-                    Style="{StaticResource AccentButtonStyle}"
-                    Click="StartButton_Click" />
-                <Button Content="Reset" Click="ResetButton_Click" />
-                <Button Content="Skip" Click="SkipButton_Click" />
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-                <TextBlock x:Name="GlobalFocusLabel" Text="You've focused for a total of: "
-                   Style="{StaticResource SubtitleTextBlockStyle}"
-                   HorizontalAlignment="Center" />
-                <TextBlock x:Name="GlobalFocusTimeLabel" Text=""
-                   Style="{StaticResource SubtitleTextBlockStyle}"
-                   HorizontalAlignment="Center" />
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-                <TextBlock x:Name="DNDStatusText" Text="Tip: Turn Do Not Disturb on to focus"
-                   Style="{StaticResource SubtitleTextBlockStyle}"
-                   HorizontalAlignment="Center" />
-                <Button x:Name="OpenDNDSettingsButton" Content="Open Settings" Click="OpenDNDSettingsButton_Click" />
-            </StackPanel>
-        </StackPanel>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </Window>
