@@ -18,6 +18,7 @@ namespace Focus_Timer
 
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
+            AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory, "Assets", "tray_icon.ico"));
 
             AppWindow.Closing += AppWindow_Closing;
             Closed += Window_Closed;

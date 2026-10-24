@@ -43,6 +43,9 @@ namespace Focus_Timer
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            // Required for unpackaged builds (release zip); harmless when packaged
+            Microsoft.Windows.AppNotifications.AppNotificationManager.Default.Register();
+
             _window = new MainWindow();
             _window.Activate();
         }
