@@ -39,8 +39,7 @@
                                    IsClickEnabled="True"
                                    Click="OpenDNDSettings_Click">
 				<controls:SettingsCard.HeaderIcon>
-					<FontIcon Glyph="&#xE708;"
-							  Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+					<FontIcon Glyph="&#xE708;" />
 				</controls:SettingsCard.HeaderIcon>
 				<controls:SettingsCard.ActionIcon>
 					<FontIcon Glyph="&#xE8A7;"/>

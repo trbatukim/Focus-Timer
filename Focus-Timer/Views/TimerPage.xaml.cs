@@ -2,8 +2,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.AppNotifications;
 using Microsoft.Windows.AppNotifications.Builder;
-using System;
-using Windows.System;
 using Focus_Timer.Services;
 
 namespace Focus_Timer.Views
