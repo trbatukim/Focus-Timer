@@ -12,8 +12,7 @@ namespace Focus_Timer.Services
     {
         public bool CloseToTray { get; set; } = true;
         public bool CloseToTrayOnlyWhenTimerRunning { get; set; } = true;
-        public bool NotificationsEnabled { get; set; } = false;
-        public bool PlaySound { get; set; } = true;
+        public bool NotificationsEnabled { get; set; } = true;
 
         private static readonly string FilePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -34,8 +33,12 @@ namespace Focus_Timer.Services
 
         public void Save()
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
-            File.WriteAllText(FilePath, JsonSerializer.Serialize(this));
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
+                File.WriteAllText(FilePath, JsonSerializer.Serialize(this));
+            }
+            catch { /* prevent crashing */ }
         }
     }
 }

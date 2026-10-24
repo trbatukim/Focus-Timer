@@ -4,6 +4,7 @@ using Microsoft.Windows.AppNotifications;
 using Microsoft.Windows.AppNotifications.Builder;
 using System;
 using Windows.System;
+using Focus_Timer.Services;
 
 namespace Focus_Timer.Views
 {
@@ -164,11 +165,6 @@ namespace Focus_Timer.Views
             UpdateDisplay();
         }
 
-        private async void OpenDNDSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            await Launcher.LaunchUriAsync(new Uri("ms-settings:notifications"));
-        }
-
         private void UpdateDisplay()
         {
             ModeText.Text = _isFocus ? "Focus" : "Break";
@@ -191,6 +187,8 @@ namespace Focus_Timer.Views
 
         private void NotifySessionEnded(bool focusEnded)
         {
+            if (!AppSettings.Current.NotificationsEnabled) return;
+
             var builder = new AppNotificationBuilder()
                 .AddText(focusEnded ? "Focus session done" : "Break's over")
                 .AddText(focusEnded ? "Time for a break." : "Back to focus.")

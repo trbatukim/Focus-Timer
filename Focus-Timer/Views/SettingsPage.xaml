@@ -19,6 +19,12 @@
 				<ToggleSwitch x:Name="CloseToTrayToggle" Toggled="Setting_Toggled"/>
 			</controls:SettingsCard>
 
+			<controls:SettingsCard Header="Only while timer is running"
+									Description="Close to tray only when timer is running"
+								   Visibility="{x:Bind CloseToTrayToggle.IsOn, Mode=OneWay}">
+				<ToggleSwitch x:Name="CloseToTrayOnlyWhenRunningToggle" Toggled="Setting_Toggled"/>
+			</controls:SettingsCard>
+
 			<TextBlock Text="Notifications" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="0,16,0,4"/>
 			<controls:SettingsCard Header="Show notifications"
                                    Description="Notify me when a session or break ends">
@@ -28,14 +34,14 @@
 				<ToggleSwitch x:Name="NotificationsToggle" Toggled="Setting_Toggled"/>
 			</controls:SettingsCard>
 
-			<controls:SettingsCard Header="Play sound">
-				<ToggleSwitch x:Name="SoundToggle" Toggled="Setting_Toggled"/>
-			</controls:SettingsCard>
-
 			<controls:SettingsCard Header="Do Not Disturb"
                                    Description="Open Windows Focus settings"
                                    IsClickEnabled="True"
                                    Click="OpenDNDSettings_Click">
+				<controls:SettingsCard.HeaderIcon>
+					<FontIcon Glyph="&#xE708;"
+							  Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+				</controls:SettingsCard.HeaderIcon>
 				<controls:SettingsCard.ActionIcon>
 					<FontIcon Glyph="&#xE8A7;"/>
 				</controls:SettingsCard.ActionIcon>

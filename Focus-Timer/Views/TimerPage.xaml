@@ -169,26 +169,6 @@
                         </StackPanel>
                     </Border>
                 </Grid>
-
-                <!-- Do Not Disturb tip -->
-                <Border Style="{StaticResource CardStyle}" Padding="16,12">
-                    <Grid ColumnSpacing="12">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <FontIcon Glyph="&#xE708;" FontSize="16" VerticalAlignment="Center"
-                                  Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
-                        <TextBlock x:Name="DNDStatusText" Grid.Column="1"
-                                   Text="Tip: Turn on Do Not Disturb to stay focused"
-                                   Style="{StaticResource BodyTextBlockStyle}"
-                                   TextWrapping="Wrap" VerticalAlignment="Center" />
-                        <Button x:Name="OpenDNDSettingsButton" Grid.Column="2"
-                                Content="Open Settings" VerticalAlignment="Center"
-                                Click="OpenDNDSettingsButton_Click" />
-                    </Grid>
-                </Border>
             </StackPanel>
         </Grid>
     </ScrollViewer>

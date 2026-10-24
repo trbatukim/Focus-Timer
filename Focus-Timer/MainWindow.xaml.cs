@@ -19,6 +19,7 @@ using Windows.UI.ApplicationSettings;
 using Windows.UI.Shell;
 using Focus_Timer.Views;
 using WinUIEx;
+using Focus_Timer.Services;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -54,7 +55,8 @@ namespace Focus_Timer
 
         private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
-            if (_isExiting || TimerPage.Current?.IsRunning != true) return;
+            if (_isExiting || !AppSettings.Current.CloseToTray) return;
+            if (AppSettings.Current.CloseToTrayOnlyWhenTimerRunning && TimerPage.Current?.IsRunning != true) return;
 
             args.Cancel = true;
             MinimizeToTray();
