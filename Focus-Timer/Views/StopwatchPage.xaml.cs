@@ -61,7 +61,9 @@ namespace Focus_Timer.Views
 
         private void UpdateDisplay()
         {
-            TimeText.Text = Format(_stopwatch.Elapsed);
+            var t = _stopwatch.Elapsed;
+            TimeRun.Text = $"{(int)t.TotalHours:00}:{t.Minutes:00}:{t.Seconds:00}";
+            FractionRun.Text = $".{t.Milliseconds / 10:00}";
             StartButton.Content = _stopwatch.IsRunning ? "Pause"
                 : _stopwatch.Elapsed > TimeSpan.Zero ? "Resume" : "Start";
             LapButton.IsEnabled = _stopwatch.IsRunning;

@@ -38,10 +38,13 @@
                                        CharacterSpacing="60" />
                         </Border>
 
-                        <TextBlock x:Name="TimeText" Text="00:00:00.00"
-                                   FontFamily="Segoe UI Variable Display"
+                        <TextBlock FontFamily="Segoe UI Variable Display"
                                    FontSize="72" FontWeight="SemiBold"
-                                   HorizontalAlignment="Center" />
+                                   Typography.NumeralAlignment="Tabular"
+                                   HorizontalAlignment="Center">
+                            <Run x:Name="TimeRun" Text="00:00:00" /><Run x:Name="FractionRun" Text=".00" FontSize="40"
+                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        </TextBlock>
 
                         <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" Margin="0,4,0,0">
                             <Button x:Name="StartButton" Content="Start" MinWidth="120"
@@ -67,34 +70,42 @@
 
                 <!-- Laps -->
                 <Border x:Name="LapsCard" Style="{StaticResource CardStyle}" Visibility="Collapsed">
-                    <StackPanel Spacing="12">
+                    <Grid RowSpacing="12">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <FontIcon Glyph="&#xE7C1;" FontSize="14"
                                       Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
                             <TextBlock Text="Laps" Style="{StaticResource CardHeaderStyle}" />
                         </StackPanel>
 
-                        <ItemsControl x:Name="LapsList">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="local:LapEntry">
-                                    <Grid Padding="0,6" ColumnSpacing="12">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{x:Bind Name}" />
-                                        <TextBlock Grid.Column="1" Text="{x:Bind LapTimeText}"
-                                                   FontFamily="Segoe UI Variable Display" />
-                                        <TextBlock Grid.Column="2" Text="{x:Bind TotalText}" MinWidth="96"
-                                                   TextAlignment="Right"
-                                                   FontFamily="Segoe UI Variable Display"
-                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
+                        <ScrollViewer Grid.Row="1" MaxHeight="260" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl x:Name="LapsList">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="local:LapEntry">
+                                        <Grid Padding="0,6" ColumnSpacing="12" Margin="0,0,16,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{x:Bind Name}" />
+                                            <TextBlock Grid.Column="1" Text="{x:Bind LapTimeText}"
+                                                       FontFamily="Segoe UI Variable Display"
+                                                       Typography.NumeralAlignment="Tabular" />
+                                            <TextBlock Grid.Column="2" Text="{x:Bind TotalText}" MinWidth="96"
+                                                       TextAlignment="Right"
+                                                       FontFamily="Segoe UI Variable Display"
+                                                       Typography.NumeralAlignment="Tabular"
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
                 </Border>
             </StackPanel>
         </Grid>
