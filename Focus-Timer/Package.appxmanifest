@@ -12,7 +12,7 @@
 
   <Identity
     Name="1882c99b-05fe-47f0-8d40-1828bfbd7a0c"
-    Publisher="CN=PC"
+    Publisher="CN=Batuhan Özkara"
     Version="1.1.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="1882c99b-05fe-47f0-8d40-1828bfbd7a0c" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
