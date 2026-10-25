@@ -61,6 +61,14 @@
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
   </PropertyGroup>
 
+  <!-- The WindowsAppSDK metapackage ships the Windows ML runtime (~40 MB); the app doesn't use it -->
+  <Target Name="RemoveUnusedWindowsML" AfterTargets="ResolvePackageAssets">
+    <ItemGroup>
+      <NativeCopyLocalItems Remove="@(NativeCopyLocalItems)" Condition="'%(Filename)' == 'onnxruntime' Or '%(Filename)' == 'DirectML' Or '%(Filename)' == 'Microsoft.Windows.AI.MachineLearning'" />
+      <RuntimeCopyLocalItems Remove="@(RuntimeCopyLocalItems)" Condition="'%(Filename)' == 'onnxruntime' Or '%(Filename)' == 'DirectML' Or '%(Filename)' == 'Microsoft.Windows.AI.MachineLearning'" />
+    </ItemGroup>
+  </Target>
+
   <!-- Publish Properties -->
   <PropertyGroup>
     <PublishReadyToRun Condition="'$(Configuration)' == 'Debug'">False</PublishReadyToRun>

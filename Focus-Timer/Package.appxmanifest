@@ -12,14 +12,14 @@
 
   <Identity
     Name="1882c99b-05fe-47f0-8d40-1828bfbd7a0c"
-    Publisher="CN=PC"
-    Version="1.0.0.0" />
+    Publisher="trbatukim"
+    Version="1.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="1882c99b-05fe-47f0-8d40-1828bfbd7a0c" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Focus-Timer</DisplayName>
-    <PublisherDisplayName>PC</PublisherDisplayName>
+    <DisplayName>Focus Timer</DisplayName>
+    <PublisherDisplayName>trbatukim</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -37,8 +37,8 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="Focus-Timer"
-        Description="Focus-Timer"
+        DisplayName="Focus Timer"
+        Description="A timer and stopwatch app to help you stay focused"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">
