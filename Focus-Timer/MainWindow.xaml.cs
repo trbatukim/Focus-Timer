@@ -30,12 +30,15 @@ namespace Focus_Timer
                 ContentFrame.Navigate(typeof(SettingsPage));
             else if ((args.SelectedItem as NavigationViewItem)?.Tag is "Timer")
                 ContentFrame.Navigate(typeof(TimerPage));
+            else if ((args.SelectedItem as NavigationViewItem)?.Tag is "Stopwatch")
+                ContentFrame.Navigate(typeof(StopwatchPage));
         }
 
         private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
             if (_isExiting || !AppSettings.Current.CloseToTray) return;
-            if (AppSettings.Current.CloseToTrayOnlyWhenTimerRunning && TimerPage.Current?.IsRunning != true) return;
+            if (AppSettings.Current.CloseToTrayOnlyWhenTimerRunning && TimerPage.Current?.IsRunning != true
+                && StopwatchPage.Current?.IsRunning != true) return;
 
             args.Cancel = true;
             MinimizeToTray();

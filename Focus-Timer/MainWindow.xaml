@@ -9,7 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Width="1200" Height="700"
-    Title="Focus-Timer">
+    Title="Focus Timer">
 
     <winex:WindowEx.SystemBackdrop>
         <MicaBackdrop />
@@ -38,6 +38,11 @@
                         SelectionChanged="NavView_SelectionChanged">
             <NavigationView.MenuItems>
                 <NavigationViewItem Content="Timer" Icon="Clock" Tag="Timer" IsSelected="True" />
+                <NavigationViewItem Content="Stopwatch" Tag="Stopwatch">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE916;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
             </NavigationView.MenuItems>
 
             <Frame x:Name="ContentFrame" />
