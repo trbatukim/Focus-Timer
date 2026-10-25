@@ -37,8 +37,8 @@ namespace Focus_Timer
         private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
             if (_isExiting || !AppSettings.Current.CloseToTray) return;
-            if (AppSettings.Current.CloseToTrayOnlyWhenTimerRunning && TimerPage.Current?.IsRunning != true
-                && StopwatchPage.Current?.IsRunning != true) return;
+            if (AppSettings.Current.CloseToTrayOnlyWhenTimerRunning && !TimerService.IsRunning
+                && !StopwatchService.IsRunning) return;
 
             args.Cancel = true;
             MinimizeToTray();
@@ -59,11 +59,29 @@ namespace Focus_Timer
                 var open = new MenuFlyoutItem { Text = "Open" };
                 open.Click += (_, _) => RestoreFromTray();
 
+                // The menu is rebuilt on every open, so IsEnabled reflects the current state
+                var startTimer = new MenuFlyoutItem { Text = "Start Timer", IsEnabled = !TimerService.IsRunning };
+                startTimer.Click += (_, _) => TimerService.StartTimer();
+
+                var stopTimer = new MenuFlyoutItem { Text = "Stop Timer", IsEnabled = TimerService.IsRunning };
+                stopTimer.Click += (_, _) => TimerService.StopTimer();
+
+                var startStopwatch = new MenuFlyoutItem { Text = "Start Stopwatch", IsEnabled = !StopwatchService.IsRunning };
+                startStopwatch.Click += (_, _) => StopwatchService.Start();
+
+                var stopStopwatch = new MenuFlyoutItem { Text = "Stop Stopwatch", IsEnabled = StopwatchService.IsRunning };
+                stopStopwatch.Click += (_, _) => StopwatchService.Stop();
+
                 var quit = new MenuFlyoutItem { Text = "Quit" };
                 quit.Click += (_, _) => ExitApp();
 
                 var flyout = new MenuFlyout();
                 flyout.Items.Add(open);
+                flyout.Items.Add(new MenuFlyoutSeparator());
+                flyout.Items.Add(startTimer);
+                flyout.Items.Add(stopTimer);
+                flyout.Items.Add(startStopwatch);
+                flyout.Items.Add(stopStopwatch);
                 flyout.Items.Add(new MenuFlyoutSeparator());
                 flyout.Items.Add(quit);
                 e.Flyout = flyout;

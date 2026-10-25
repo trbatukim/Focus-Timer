@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:local="using:Focus_Timer.Views"
+    xmlns:services="using:Focus_Timer.Services"
     mc:Ignorable="d"
     NavigationCacheMode="Required">
 
@@ -84,7 +84,7 @@
                         <ScrollViewer Grid.Row="1" MaxHeight="260" VerticalScrollBarVisibility="Auto">
                             <ItemsControl x:Name="LapsList">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="local:LapEntry">
+                                    <DataTemplate x:DataType="services:LapEntry">
                                         <Grid Padding="0,6" ColumnSpacing="12" Margin="0,0,16,0">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />
