@@ -106,6 +106,7 @@ namespace Focus_Timer.Services
             if (!AppSettings.Current.NotificationsEnabled) return;
 
             var builder = new AppNotificationBuilder()
+                .AddArgument(InstanceSignal.NotificationArgument, Environment.ProcessId.ToString())
                 .AddText(focusEnded ? "Focus session done" : "Break's over")
                 .AddText(focusEnded ? "Time for a break." : "Back to focus.")
                 .SetAudioEvent(AppNotificationSoundEvent.Reminder);

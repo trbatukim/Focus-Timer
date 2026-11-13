@@ -98,6 +98,15 @@ namespace Focus_Timer
             _tray = null;
         }
 
+        public void BringToForeground()
+        {
+            if (AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized } presenter)
+                presenter.Restore();
+
+            RestoreFromTray();
+            this.BringToFront();
+        }
+
         private void ExitApp()
         {
             _isExiting = true;

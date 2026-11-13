@@ -86,6 +86,5 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>False</GenerateTestArtifacts>
     <AppxBundle>Never</AppxBundle>
-    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-  </PropertyGroup>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>  </PropertyGroup>
 </Project>
